@@ -771,6 +771,288 @@ p {
 }
 
 /* ---------------------------------------------------------
+   フルスクリーン写真ヒーロー(トップページなど)
+   --------------------------------------------------------- */
+.photo-hero {
+  position: relative;
+  height: min(88vh, 720px);
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  overflow: hidden;
+  background: var(--color-main-dark);
+}
+
+.photo-hero .hero-photo-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.photo-hero .hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 6, 10, 0.55) 0%,
+    rgba(157, 12, 34, 0.55) 45%,
+    rgba(20, 6, 10, 0.78) 100%
+  );
+}
+
+.photo-hero .container {
+  position: relative;
+  z-index: 1;
+}
+
+.photo-hero .eyebrow {
+  display: inline-block;
+  font-size: 12.5px;
+  letter-spacing: 0.28em;
+  color: var(--color-accent);
+  border: 1px solid rgba(212, 160, 23, 0.7);
+  padding: 4px 14px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.photo-hero h1 {
+  color: #fff;
+  font-size: clamp(30px, 5vw, 50px);
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+  margin-bottom: 14px;
+}
+
+.photo-hero p {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 15.5px;
+  max-width: 600px;
+  margin: 0 auto;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+}
+
+.photo-hero .cta-buttons {
+  margin-top: 30px;
+}
+
+/* ---------------------------------------------------------
+   写真つきfeature-visual(実写真をfeature-rowで使う場合)
+   --------------------------------------------------------- */
+.feature-visual.has-photo {
+  padding: 0;
+  background: var(--color-text);
+}
+
+.feature-visual.has-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.feature-visual.has-photo.emblem {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.feature-visual.has-photo.emblem img {
+  object-fit: contain;
+  padding: 32px;
+}
+
+/* ---------------------------------------------------------
+   写真ギャラリー / フィギュア(調神社ページ等)
+   --------------------------------------------------------- */
+.photo-figure {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.photo-figure img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+}
+
+.photo-figure figcaption {
+  padding: 14px 18px;
+  font-size: 13px;
+  color: var(--color-text-light);
+  border-top: 3px solid var(--color-accent);
+}
+
+.photo-story {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.photo-story + .photo-story {
+  margin-top: 56px;
+  padding-top: 56px;
+  border-top: 1px solid var(--color-border);
+}
+
+.photo-story.reverse .photo-figure {
+  order: 2;
+}
+
+.photo-story .story-text .index {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--color-main);
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.photo-story .story-text h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.photo-story .story-text p {
+  color: var(--color-text-light);
+  font-size: 14.5px;
+  margin-bottom: 0;
+}
+
+.photo-grid-small {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.photo-grid-small .photo-figure img {
+  height: 220px;
+}
+
+/* ---------------------------------------------------------
+   スタジアム大型フィーチャー(サッカーページ)
+   --------------------------------------------------------- */
+.feature-big-photo {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 420px;
+  display: flex;
+  align-items: flex-end;
+  color: #fff;
+}
+
+.feature-big-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.feature-big-photo .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(20, 6, 10, 0.85) 0%, rgba(20, 6, 10, 0.05) 60%);
+}
+
+.feature-big-photo .caption {
+  position: relative;
+  z-index: 1;
+  padding: 32px;
+}
+
+.feature-big-photo .caption .index {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--color-accent);
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.feature-big-photo .caption h3 {
+  color: #fff;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.feature-big-photo .caption p {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 14.5px;
+  max-width: 520px;
+  margin-bottom: 0;
+}
+
+/* ---------------------------------------------------------
+   Googleマップ埋め込み(レスポンシブ)
+   --------------------------------------------------------- */
+.map-embed {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 */
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 24px rgba(51, 51, 51, 0.08);
+}
+
+.map-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ---------------------------------------------------------
+   写真プレースホルダー(未撮影ページ用)
+   --------------------------------------------------------- */
+.photo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 260px;
+  border: 2px dashed var(--color-border);
+  border-radius: 10px;
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(212, 160, 23, 0.05),
+    rgba(212, 160, 23, 0.05) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+  color: var(--color-text-light);
+  text-align: center;
+  padding: 20px;
+}
+
+.photo-placeholder .icon {
+  font-size: 28px;
+  color: var(--color-accent);
+}
+
+.photo-placeholder strong {
+  color: var(--color-text);
+  font-size: 14px;
+}
+
+.photo-placeholder span {
+  font-size: 12.5px;
+}
+
+/* ---------------------------------------------------------
    レスポンシブ
    --------------------------------------------------------- */
 @media (max-width: 860px) {
@@ -779,6 +1061,15 @@ p {
   }
 
   .feature-row.reverse .feature-visual {
+    order: 0;
+  }
+
+  .photo-story {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .photo-story.reverse .photo-figure {
     order: 0;
   }
 
@@ -848,5 +1139,17 @@ p {
   .info-table td {
     padding: 12px 14px;
     font-size: 13px;
+  }
+
+  .photo-hero {
+    height: min(70vh, 560px);
+  }
+
+  .feature-big-photo {
+    min-height: 320px;
+  }
+
+  .photo-figure img {
+    height: 220px;
   }
 }
