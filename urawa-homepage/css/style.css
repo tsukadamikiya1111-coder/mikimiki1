@@ -672,6 +672,43 @@ p {
   margin-bottom: 0;
 }
 
+.spot-item .spot-media {
+  margin: -24px -24px 16px -24px;
+  height: 160px;
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+}
+
+.spot-item .spot-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.spot-item .spot-media.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(212, 160, 23, 0.05),
+    rgba(212, 160, 23, 0.05) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+  color: var(--color-text-light);
+  font-size: 12px;
+  text-align: center;
+}
+
+.spot-item .spot-media.placeholder .icon {
+  font-size: 22px;
+  color: var(--color-accent);
+}
+
 /* ---------------------------------------------------------
    CTA帯
    --------------------------------------------------------- */
