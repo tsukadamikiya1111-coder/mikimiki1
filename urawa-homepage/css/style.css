@@ -1052,6 +1052,33 @@ p {
 }
 
 /* ---------------------------------------------------------
+   動画埋め込み
+   --------------------------------------------------------- */
+.video-frame {
+  max-width: 760px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 14px 30px rgba(51, 51, 51, 0.15);
+  background: #000;
+}
+
+.video-frame video {
+  width: 100%;
+  display: block;
+  max-height: 70vh;
+}
+
+.video-credit {
+  max-width: 760px;
+  margin: 16px auto 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-light);
+}
+
+/* ---------------------------------------------------------
    写真プレースホルダー(未撮影ページ用)
    --------------------------------------------------------- */
 .photo-placeholder {
