@@ -486,6 +486,10 @@ p {
   order: 2;
 }
 
+.feature-row.single {
+  grid-template-columns: 1fr;
+}
+
 .feature-visual {
   height: 240px;
   border-radius: 10px;
