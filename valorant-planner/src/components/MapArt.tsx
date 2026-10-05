@@ -1,4 +1,4 @@
-import { mapById } from '../data/maps'
+import { imageBox, mapById } from '../data/maps'
 import type { Rect } from '../data/maps'
 import type { Side } from '../types'
 
@@ -9,8 +9,21 @@ const FONT = "'Segoe UI', 'Hiragino Sans', 'Yu Gothic', Meiryo, sans-serif"
 
 const rectProps = ([x, y, w, h]: Rect) => ({ x, y, width: w, height: h })
 
-export function MapArt({ mapId, side }: { mapId: string; side: Side }) {
-  const m = mapById(mapId)
+const IMAGE_BG = '#090f14'
+
+/** embedHref: PNG 書き出し用。SVG を画像化する際は外部画像を読めないので data URL を渡す */
+export function MapArt({ mapId, side, embedHref }: { mapId: string; side: Side; embedHref?: string }) {
+  const def = mapById(mapId)
+  if (def.image) {
+    const [x, y, w, h] = imageBox(def.image)
+    return (
+      <g>
+        <rect width={1000} height={1000} fill={IMAGE_BG} />
+        <image href={embedHref ?? def.image.src} x={x} y={y} width={w} height={h} preserveAspectRatio="none" />
+      </g>
+    )
+  }
+  const m = def.sketch!
   return (
     <g fontFamily={FONT}>
       <rect width={1000} height={1000} fill="#0b131a" />

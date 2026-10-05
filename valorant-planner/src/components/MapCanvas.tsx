@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent as RPointerEvent } from 'react'
-import { MAPS } from '../data/maps'
+import { MAPS, mapById, siteRect } from '../data/maps'
 import { hit, moveItem, topHit } from '../geometry'
 import { uid, useCurrentPlan, useStore } from '../store'
 import type { Item } from '../types'
@@ -35,6 +35,20 @@ export function MapCanvas() {
   const [textEdit, setTextEdit] = useState<TextEdit | null>(null)
   const committed = useRef(false)
 
+  const [hoverSite, setHoverSite] = useState<string | null>(null)
+  const [pinnedSite, setPinnedSite] = useState<string | null>(null)
+  const mapDef = mapById(plan.map)
+  const sites = mapDef.sites.map((site) => ({ label: site.label, rect: siteRect(mapDef, site) }))
+  const siteAt = (x: number, y: number) =>
+    sites.find(({ rect: [rx, ry, rw, rh] }) => x >= rx && x <= rx + rw && y >= ry && y <= ry + rh)?.label ?? null
+  const activeSite = hoverSite ?? pinnedSite
+
+  // マップを切り替えたらサイトのハイライトを解除
+  useEffect(() => {
+    setHoverSite(null)
+    setPinnedSite(null)
+  }, [plan.map])
+
   const items = plan.steps[s.step].items
   const ghost = s.onion && s.step > 0 ? plan.steps[s.step - 1].items : null
   const selected = items.find((i) => i.id === s.selectedId)
@@ -66,6 +80,10 @@ export function MapCanvas() {
       case 'select': {
         const t = topHit(items, x, y)
         st.select(t?.id ?? null)
+        if (!t) {
+          const site = siteAt(x, y)
+          setPinnedSite((cur) => (site && cur !== site ? site : null))
+        }
         if (t) {
           st.pushHistory()
           drag.current = { kind: 'move', id: t.id, x, y }
@@ -108,8 +126,12 @@ export function MapCanvas() {
 
   const onPointerMove = (e: RPointerEvent<SVGSVGElement>) => {
     const d = drag.current
-    if (!d) return
     const { x, y } = toPoint(e)
+    if (!d) {
+      const site = siteAt(x, y)
+      if (site !== hoverSite) setHoverSite(site)
+      return
+    }
     if (d.kind === 'move') {
       const st = useStore.getState()
       const cur = st.plans.find((p) => p.id === st.currentId) ?? st.plans[0]
@@ -217,6 +239,19 @@ export function MapCanvas() {
             ))}
           </select>
         </label>
+        <div className="site-chips" title="サイト範囲をハイライト">
+          {sites.map(({ label }) => (
+            <button
+              key={label}
+              className={activeSite === label ? 'active' : ''}
+              onMouseEnter={() => setHoverSite(label)}
+              onMouseLeave={() => setHoverSite(null)}
+              onClick={() => setPinnedSite((cur) => (cur === label ? null : label))}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
         <span className="badge">STEP {s.step + 1} / 10</span>
         <span className="spacer" />
         <button disabled={!s.past.length} onClick={s.undo} title="元に戻す (Ctrl+Z)">↶ Undo</button>
@@ -234,8 +269,19 @@ export function MapCanvas() {
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerUp}
             onDoubleClick={onDoubleClick}
+            onPointerLeave={() => setHoverSite(null)}
           >
             <MapArt mapId={plan.map} side={plan.side} />
+            {sites.map(({ label, rect: [x, y, w, h] }) =>
+              label === activeSite ? (
+                <g key={label} pointerEvents="none">
+                  <rect x={x} y={y} width={w} height={h} rx={6} fill="rgba(255,70,85,0.18)" stroke="#ffd166" strokeWidth={3} strokeDasharray="10 6" />
+                  <text x={x + w / 2} y={y - 8} textAnchor="middle" fontSize={22} fontWeight={800} fill="#ffd166" stroke="#0b131a" strokeWidth={4} paintOrder="stroke">
+                    {label} SITE
+                  </text>
+                </g>
+              ) : null,
+            )}
             {ghost && (
               <g opacity={0.22} pointerEvents="none">
                 <Items items={ghost} />
