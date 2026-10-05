@@ -1,3 +1,4 @@
+import { ConfirmButton } from '../components/ConfirmButton'
 import { PlanPreview } from '../components/PlanPreview'
 import { mapById } from '../data/maps'
 import { useStore } from '../store'
@@ -29,7 +30,7 @@ export function Playbook() {
                 <div className="row">
                   <button onClick={() => { switchPlan(p.id); setTab('STRATEGY') }}>開く</button>
                   <button onClick={() => duplicatePlan(p.id)}>複製</button>
-                  <button className="danger" onClick={() => confirm(`「${p.name}」を削除しますか？`) && deletePlan(p.id)}>削除</button>
+                  <ConfirmButton className="danger" onConfirm={() => deletePlan(p.id)}>削除</ConfirmButton>
                 </div>
               </div>
             </div>

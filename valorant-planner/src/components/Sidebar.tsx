@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { AGENTS, ROLES, roleColor } from '../data/agents'
 import { STAMPS, StampGlyph } from '../data/stamps'
 import { scaleItem } from '../geometry'
@@ -7,6 +7,7 @@ import { groupOf, uid, useCurrentPlan, useStore } from '../store'
 import { STEP_COUNT } from '../types'
 import type { ItemGroup, Tool } from '../types'
 import { AudioPanel } from './AudioPanel'
+import { ConfirmButton } from './ConfirmButton'
 import { PlanPreview } from './PlanPreview'
 
 const TOOLS: { id: Tool; label: string; icon: string }[] = [
@@ -31,6 +32,7 @@ const COLORS = ['#ff4655', '#ffffff', '#f2c94c', '#4fd1a5', '#4fc3f7', '#b388ff'
 export function Sidebar() {
   const plan = useCurrentPlan()
   const s = useStore()
+  const [error, setError] = useState('')
   const imageInput = useRef<HTMLInputElement>(null)
   const thumbInput = useRef<HTMLInputElement>(null)
   const items = plan.steps[s.step].items
@@ -52,7 +54,7 @@ export function Sidebar() {
       s.setTool('select')
       s.select(id)
     } catch (e) {
-      alert((e as Error).message)
+      setError((e as Error).message)
     }
   }
 
@@ -61,7 +63,7 @@ export function Sidebar() {
     try {
       s.patchPlan({ thumbnail: (await loadImage(file, 480)).href })
     } catch (e) {
-      alert((e as Error).message)
+      setError((e as Error).message)
     }
   }
 
@@ -137,15 +139,8 @@ export function Sidebar() {
       <div className="section">
         <h3>Delete</h3>
         <div className="row">
-          <button
-            className="danger"
-            onClick={() => confirm('全ステップの描き込みと音声をすべて削除します。よろしいですか？') && s.clearAll()}
-          >
-            Everything
-          </button>
-          <button className="danger" onClick={() => confirm(`STEP ${s.step + 1} の内容を削除します。よろしいですか？`) && s.clearStep()}>
-            Sequence Step
-          </button>
+          <ConfirmButton className="danger" onConfirm={s.clearAll}>Everything</ConfirmButton>
+          <ConfirmButton className="danger" onConfirm={s.clearStep}>Sequence Step</ConfirmButton>
         </div>
         <div className="icon-row">
           {GROUPS.map((g) => {
@@ -171,6 +166,7 @@ export function Sidebar() {
             </button>
           ))}
         </div>
+        {error && <div className="error">{error}</div>}
         <input ref={imageInput} type="file" accept="image/*" hidden onChange={(e) => { onImage(e.target.files?.[0]); e.target.value = '' }} />
         <div className="colors">
           {COLORS.map((c) => (
