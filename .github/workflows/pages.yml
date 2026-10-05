@@ -1,11 +1,13 @@
-name: Deploy urawa-homepage to GitHub Pages
+name: Deploy urawa-homepage and valorant-planner to GitHub Pages
 
 on:
   push:
     branches:
       - claude/urawa-homepage-design-dfrdia
+      - claude/youthful-pascal-lduhso
     paths:
       - "urawa-homepage/**"
+      - "valorant-planner/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -33,10 +35,29 @@ jobs:
         with:
           enablement: true
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: valorant-planner/package-lock.json
+
+      - name: Build valorant-planner
+        working-directory: valorant-planner
+        run: |
+          npm ci
+          npm run build -- --base=./
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site/planner
+          cp -r urawa-homepage/. _site/
+          cp -r valorant-planner/dist/. _site/planner/
+
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: urawa-homepage
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
